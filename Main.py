@@ -1,33 +1,24 @@
-import time
-from random import Random
+import json
 
-import undetected_chromedriver as uc
-from selenium.webdriver import Chrome, ChromeOptions
-from selenium.webdriver.chrome.service import Service
-from selenium_stealth import stealth
-from webdriver_manager.chrome import ChromeDriverManager
+completed_codes = ['de', 'German_fi', 'uk', 'at', 'lt', 'ro', 'lv', 'ee', 'cz', 'it', 'dk', 'se', 'pl', 'no', 'hr',
+                   'si', 'ch', ]
 
 
-def gen_driver():
-    try:
-        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.140 Safari/537.36"
-        chrome_options = uc.ChromeOptions()
-        # chrome_options.add_argument('--headless=new')
-        chrome_options.add_argument("--start-maximized")
-        chrome_options.add_argument("user-agent={}".format(user_agent))
-        chrome_options.add_argument("--auto-open-devtools-for-tabs")
-        driver = uc.Chrome(options=chrome_options, driver_executable_path=ChromeDriverManager().install())
-        stealth(driver,
-                languages=["en-US", "en"],
-                vendor="Google Inc.",
-                platform="Win32",
-                webgl_vendor="Intel Inc.",
-                renderer="Intel Iris OpenGL Engine",
-                fix_hairline=True
-                )
-        return driver
-    except Exception as e:
-        print("Error in Driver: ", e)
+def remove_values(value, country_code):
+    catalog = value['Catalog']
+    remove = ['solo®', 'by', 'By', 'BY', 'Solo', 'Al-ko', 'AL-KO', 'AL-KO']
+    for r in remove:
+        catalog = catalog.replace(r, '')
+    value['Catalog'] = ' '.join([item for item in str(catalog).rstrip('Al').rstrip('B').strip().split(' ') if item])
+    if country_code == 'German_fi':
+        country_code = 'en'
+    value['lang'] = country_code
+    return value
 
 
-time.sleep(Random().randint(1, 4))
+files_data = []
+for completed_code in completed_codes:
+    with open(f"{completed_code}.json", 'r') as json_file:
+        files_data.extend([remove_values(d, completed_code) for d in json.load(json_file)])
+with open(f"All Data.json", 'w') as json_file:
+    json_file.write(json.dumps(files_data, indent=4))

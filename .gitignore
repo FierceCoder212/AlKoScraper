@@ -1,2 +1,6 @@
-*.ipynb
+*.ipynb_checkpoints
 *.idea
+*.json
+Images
+*.html
+*__pycache__*
