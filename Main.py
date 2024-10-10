@@ -17,8 +17,7 @@ def remove_values(value, country_code):
 
 
 files_data = []
-for completed_code in completed_codes:
-    with open(f"{completed_code}.json", 'r') as json_file:
-        files_data.extend([remove_values(d, completed_code) for d in json.load(json_file)])
-with open(f"All Data.json", 'w') as json_file:
+with open(f'Scraped Data.json', 'r') as json_file:
+    files_data.extend([remove_values(d, completed_code) for d in json.load(json_file)])
+with open(f'All Data.json', 'w') as json_file:
     json_file.write(json.dumps(files_data, indent=4))

@@ -30,7 +30,7 @@ def _create_records(items) -> list[dict]:
                 sglUniqueModelCode=sgl,
                 section=section,
                 partNumber=part['Item Number'],
-                description=part['Description'],
+                description=part['Desctiption'],
                 itemNumber='',
                 sectonDiagram=img_filename,
                 sectonDiagramUrl=img_url,
@@ -38,8 +38,7 @@ def _create_records(items) -> list[dict]:
     return records
 
 
-with open('Scraped Data.json', 'r') as json_file:
-    data = json.load(json_file)
-records = _create_records(data)
-helper = MSSqlHelper()
-helper.insert_many_records(records)
+with open(r'D:\Workspace\Projects\AlKoScraper\Translated Data.json', 'r') as scraped_data_file:
+    scraped_data = json.loads(scraped_data_file.read())
+records = _create_records(scraped_data)
+MSSqlHelper().insert_many_records(records)
